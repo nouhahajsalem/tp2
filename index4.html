@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    
+    <style>
+        .user .card {
+            margin: 10px;
+        }
+       
+        .user img {
+            opacity: 0.7
+        }
+        .user:hover img {
+            opacity: 1;
+            transform: scale(1.04);
+            transition: 200ms
+        }
+        .img{
+            width: 60px;
+        }
+        .form-group{
+            color: brown;
+            font-weight: 600;
+        }
+       
+        .btn btn-success{
+            background-color:rgb(119, 92, 53) ;
+        }
+        .btn {
+            float: right;
+        } 
+        .email {
+            float: right;
+        }
+        .name {
+            float: right;
+        }         
+        .body { 
+            background-image:url(Nouha.jpg) ;
+            background-size:cover;
+        } 
+        .h {
+            text-align: center;
+        }  </style>
+</head>
+<body class="body">
+    <div class="container">
+        <h1 class="h">Users List</h1>
+        <button id="displayType" class="btn btn-success" onclick="toggle(this)">Table</button>
+        <div class="users">
+            <div class="row">
+                
+            </div>
+        </div>
+    </div>
+    <div id="gabaris" style="display:none">
+        <div class="col-md-4 user">
+            <div class="card" style="width: 18rem;">
+                <img src="" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title name"></h5>
+                  <p class="card-text email"></p>
+                  <button type="button" class="btn btn-primary">
+                       <strong>modifier</strong> 
+            </button>
+
+                </div>
+              </div>
+        </div>
+    </div>
+    <div id="tbl" style="display:none">
+        <table class="col-md-12">
+            <tr>
+                <td><img class="img" src=""></img></td>
+                <td><p class="name"></p></td>
+                <td><p class="email"></p></td>
+                <td>
+                <button type="button" class="btn btn-primary">
+                    modifier
+                </button></td>
+            </tr>
+        </table>
+    </div>
+   
+   
+   
+   
+    <div class="modal" tabindex="-1" role="dialog" id="exampleModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content" style="padding: 20px">
+
+                  <div class="form-group">
+                    <label >First name</label>
+                    <input type="text" class="form-control" id="nom" aria-describedby="emailHelp" placeholder="Enter Name..">
+                    
+                  </div>
+                             <div class="form-group">
+                    <label for="">last name</label>
+                    <input type="text" class="form-control" id="prenom" aria-describedby="emailHelp" placeholder="Enter Name..">
+                    
+                  </div>
+                <div class="form-group">
+                  <label for="">Email</label>
+                  <input type="email" class="form-control" id="exampleInputPassword1" placeholder="Enter Email">
+                </div>
+                <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button class="btn btn-primary" onclick="Update()">Save</button>
+
+
+              </div>
+            </div>
+          </div>
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="users.js"></script>
+    
+   
+   
+    <script>   
+  
+     var dest = document.querySelector('.users .row')
+     
+     
+     function showGrid(){
+         var gabari = document.querySelector('#gabaris .user')
+         users.forEach(function(user, index){
+             var copy = gabari.cloneNode(true)
+             copy.querySelector('.name').innerHTML = '<b>' + user.name.last + '</b> ' + user.name.first
+             copy.querySelector('.email').innerText = user.email // selectionner lelement trouvant dans dans copy qui a la classe email et puis le modifier
+             copy.querySelector('img').setAttribute('src', user.picture.large)
+             copy.querySelector('button').setAttribute("onclick", "showForm("+index+")");
+             dest.appendChild(copy);
+         })
+     }
+     
+ 
+     function showTable(){
+         var gabari = document.querySelector('#tbl table')
+     
+         users.forEach(function(user, index){
+             var copy = gabari.cloneNode(true)
+             copy.querySelector('.name').innerHTML = '<b>' + user.name.last + '</b> ' + user.name.first
+             copy.querySelector('.email').innerText = user.email
+             copy.querySelector('img').setAttribute('src', user.picture.large)
+             copy.querySelector('button').setAttribute("onclick", "showForm("+index+")");
+             dest.appendChild(copy);
+         })
+     }
+
+     function toggle(t){
+         if(t.innerText == "Grid"){
+            t.innerText = "Table" ;
+             dest.innerHTML = null ; 
+             showTable() ;            
+         }else{
+             t.innerText = "Grid" ;
+             dest.innerHTML = null ; 
+             showGrid() ;  
+         }
+     }
+     function showForm(id)
+     {
+        document.querySelector("#exampleModal").style.display = 'block';
+        document.querySelector("#exampleModal").setAttribute('data-id', id);
+     }
+
+     //Récupére les données de la ligne séléctionner
+     function Update() {
+        
+        if(document.querySelector("#exampleModal").style.display == 'block')
+            document.querySelector("#exampleModal").style.display = 'none';
+        index = document.querySelector("#exampleModal").getAttribute('data-id');
+
+        var nom = document.querySelector("#nom").value;
+        var prenom = document.querySelector("#prenom").value;
+        var email = document.querySelector("#exampleInputPassword1").value;
+        if (nom != "") users[index].name.last=nom;
+        if (prenom != "") users[index].name.last=prenom;
+        if (email != "") users[index].name.last=email;
+        
+        dest.innerHTML = null;
+
+        var display = document.querySelector("#displayType");
+        if(display.innerText == "Grid"){
+            showGrid();            
+        }else{
+            showTable();  
+        }  
+        
+    }
+
+ 
+    showTable();
+ 
+
+
+      
+ </script>
+</script>
+</body>
+</html> 
